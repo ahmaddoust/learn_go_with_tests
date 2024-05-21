@@ -1,0 +1,200 @@
+honestly, the path that i would recommend for someone is something like:
+finish the go with tests free course
+take an introductory course to web dev using go https://www.udemy.com/course/go-programming-language/?couponCode=ST2MT43024
+read both alex edward's books "Let's go" and "let's go further"
+do some interview prep stuff (algorithms and data structures) from an economic platform such as https://www.educative.io/
+while doing the interview prep stuff, try to build some projects (CLI tools, web apps)
+if you have a lot of money to spend, take the tremendously expensive Go course from Ardan Labs which is regarded as a high value course on writing performant code using interesting engineering insights
+i guess this could take up to a year if done correctlyjfdklsa;jf;ldas but surely, with your knowledge on devops, ci/cd, aws, learning a nice programming language like go is going to Strengthen Your Career A Lot bro
+EducativeEducative
+Educative: AI-Powered Interactive Courses for Developers
+Build software development skills with AI-powered courses. Prepare for tech interviews, explore AWS Cloud Labs, and master in-demand technologies with the interactive online platform used by 2M+ developers.
+
+https://go.dev/blog/using-go-modules
+
+TDD - Discipline
+
+Let's go over the cycle again
+
+Write a test
+
+Make the compiler pass
+
+Run the test, see that it fails and check the error message is meaningful
+
+Write enough code to make the test pass
+
+Refactor
+
+On the face of it this may seem tedious but sticking to the feedback loop is important.
+
+Not only does it ensure that you have relevant tests, it helps ensure you design good software by refactoring with the safety of tests.
+
+Seeing the test fail is an important check because it also lets you see what the error message looks like. As a developer it can be very hard to work with a codebase when failing tests do not give a clear idea as to what the problem is.
+
+By ensuring your tests are fast and setting up your tools so that running tests is simple you can get in to a state of flow when writing your code.
+
+By not writing tests you are committing to manually checking your code by running your software which breaks your state of flow and you won't be saving yourself any time, especially in the long run.
+
+
+We need to pass in t *testing.T so that we can tell the test code to fail when we need to.
+
+When you have lots of if statements checking a particular value it is common to use a switch statement instead. We can use switch to refactor the code to make it easier to read and more extensible if we wish to add more language support later
+
+-------------------------
+A few new concepts:
+
+In our function signature we have made a named return value (prefix string).
+
+This will create a variable called prefix in your function.
+
+It will be assigned the "zero" value. This depends on the type, for example ints are 0 and for strings it is "".
+
+You can return whatever it's set to by just calling return rather than return prefix.
+
+This will display in the Go Doc for your function so it can make the intent of your code clearer.
+
+default in the switch case will be branched to if none of the other case statements match.
+
+The function name starts with a lowercase letter. In Go, public functions start with a capital letter and private ones start with a lowercase. We don't want the internals of our algorithm to be exposed to the world, so we made this function private.
+
+Also, we can group constants in a block instead of declaring them each on their own line. It's a good idea to use a line between sets of related constants for readability.
+
+-----------------------
+adder_test.go
+If you have noticed we learnt about named return value in the last section but aren't using the same here. It should generally be used when the meaning of the result isn't clear from context, in our case it's pretty much clear that Add function will add the parameters. You can refer this wiki for more details.
+-----
+https://www.reddit.com/r/golang/comments/scjkvd/having_trouble_installing_godoc_on_macos/
+
+On my M2 Mac, I have the following in ~/.bash_profile file (mind you, my terminal is zsh):
+
+export GOPATH=$HOME/go
+export GOBIN=$GOPATH/bin
+export PATH=$PATH:$GOBIN
+On my Surface Pro running Ubuntu, I have the following in my ~/.bashrc file (terminal is bash):
+
+export PATH=$PATH:/usr/local/go/bin
+export PATH=$PATH:$HOME/go/bin
+
+
+-------
+https://gobyexample.com/variables 
+https://gobyexample.com/for
+https://pkg.go.dev/strings 
+
+package iteration
+
+import "testing"
+
+const repeatCount = 5
+
+func Repeat(character string) string {
+	var repeated string
+	for i := 0; i < repeatCount; i++ {
+		repeated += character
+	}
+	return repeated
+}
+
+func TestRepeat(t *testing.T) {
+	repeated := Repeat("a")
+	expected := "aaaaa"
+
+	if repeated != expected {
+		t.Errorf("expected %q but got %q", expected, repeated)
+	}
+}
+
+func BenchmarkRepeat(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		Repeat("a")
+	}
+}
+
+benchmark: The primary purpose of a benchmark is to measure the execution time or memory usage of a specific piece of code. This helps in identifying performance bottlenecks, optimizing algorithms, and comparing alternative implementations.
+repeated += character is equivalent to repeated = repeated + character. This means each time the loop runs, the character string is appended to the end of the repeated string.
+
+-------------
+arrays and slices 
+
+Arrays have a fixed capacity which you define when you declare the variable. We can initialize an array in two ways:
+
+[N]type{value1, value2, ..., valueN} e.g. numbers := [5]int{1, 2, 3, 4, 5}
+
+[...]type{value1, value2, ..., valueN} e.g. numbers := [...]int{1, 2, 3, 4, 5}
+
+It is sometimes useful to also print the inputs to the function in the error message. Here, we are using the %v placeholder to print the "default" format, which works well for arrays.
+
+read more about formated strings: https://pkg.go.dev/fmt
+
+// We will now use the slice type which allows us to have collections of any size.
+// The syntax is very similar to arrays, you just omit the size when declaring them
+// mySlice := []int{1,2,3} rather than myArray := [3]int{1,2,3}
+
+Go does not let you use equality operators with slices. You could write a function to iterate over each got and want slice and check their values but for convenience sake,
+we can use reflect.DeepEqual which is useful for seeing if any two variables are the same.
+It's important to note that reflect.DeepEqual is not "type safe" - the code will compile even if you did something a bit silly. To see this in action, temporarily change the test to:
+
+func TestSumAll(t *testing.T) {
+
+	got := SumAll([]int{1, 2}, []int{0, 9})
+	want := "bob"
+
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("got %v want %v", got, want)
+	}
+}
+What we have done here is try to compare a slice with a string. This makes no sense, but the test compiles! So while using reflect.DeepEqual is a convenient way of comparing slices (and other things) you must be careful when using it.
+
+(From Go 1.21, slices standard package is available, which has slices.Equal function to do a simple shallow compare on slices, where you don't need to worry about the types like
+the above case. Note that this function expects the elements to be comparable. So, it can't be applied to slices with non-comparable elements like 2D slices.)
+
+https://quii.gitbook.io/learn-go-with-tests/go-fundamentals/arrays-and-slices#wrapping-up
+Here is an example of slicing an array and how changing the slice affects the original array; 
+but a "copy" of the slice will not affect the original array. Another example of why it's a good 
+idea to make a copy of a slice after slicing a very large slice.
+
+-------------
+function vs method: 
+
+In the provided code:
+
+func Sum(numbers [5]int) int {
+    return 0
+}
+This is a function, not a method.
+
+Here's why:
+
+No Receiver: In Go, a method is a function that has a special receiver argument. This receiver allows the function to be associated with a specific type. 
+In the provided code, there's no receiver specified. Methods are typically defined like this:
+
+func (receiverType) methodName(arguments) returnType {
+    // method body
+}
+Standalone Function: The Sum function you provided is a standalone function. It's not tied to any specific type or struct.
+
+So, to summarize, this is a regular function named Sum that takes an array of 5 integers as input and returns an integer, but it's not a method because it lacks the receiver argument that methods have.
+
+range lets you iterate over an array. On each iteration, range returns two values - the index and the value. 
+We are choosing to ignore the index value by using _ blank identifier. 
+
+Structs, Methods & interfaces:
+
+1. The syntax for declaring methods is almost the same as functions and that's because they're so similar. The only difference is the syntax of the method receiver func (receiverName ReceiverType) MethodName(args).
+   When your method is called on a variable of that type, you get your reference to its data via the receiverName variable. In many other programming languages this is done implicitly and you access the receiver via this.
+   It is a convention in Go to have the receiver variable be the first letter of the type: r Rectangle
+
+2. Interfaces are a very powerful concept in statically typed languages like Go because they allow 
+   you to make functions that can be used with different types and create highly-decoupled code 
+   whilst still maintaining type-safety.
+
+https://quii.gitbook.io/learn-go-with-tests/go-fundamentals/structs-methods-and-interfaces#decoupling
+Decoupling
+	Notice how our helper does not need to concern itself with whether the shape is a Rectangle or a Circle or a Triangle. By declaring an interface, the helper is decoupled from the concrete types and only has the method it needs to do its job.
+
+	This kind of approach of using interfaces to declare only what you need is very important in software design and will be covered in more detail in later section
+
+Struct: We can create a simple type using a struct. A struct is just a named collection of fields where you can store data.	
+
+By wrapping each case in a t.Run you will have clearer test output on failures as it will print the name of the case 
