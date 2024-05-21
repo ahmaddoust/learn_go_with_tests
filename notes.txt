@@ -74,7 +74,11 @@ export PATH=$PATH:$GOBIN
 On my Surface Pro running Ubuntu, I have the following in my ~/.bashrc file (terminal is bash):
 
 export PATH=$PATH:/usr/local/go/bin
+<<<<<<< HEAD
 export PATH=$PATH:$HOME/go/bin
+=======
+export PATH=$PATH:$HOME/go/bine
+>>>>>>> 5809362c59db6b29db1ea5623135729b26b39bc2
 
 
 -------
@@ -112,6 +116,7 @@ func BenchmarkRepeat(b *testing.B) {
 }
 
 benchmark: The primary purpose of a benchmark is to measure the execution time or memory usage of a specific piece of code. This helps in identifying performance bottlenecks, optimizing algorithms, and comparing alternative implementations.
+<<<<<<< HEAD
 repeated += character is equivalent to repeated = repeated + character. This means each time the loop runs, the character string is appended to the end of the repeated string.
 
 -------------
@@ -198,3 +203,6 @@ Decoupling
 Struct: We can create a simple type using a struct. A struct is just a named collection of fields where you can store data.	
 
 By wrapping each case in a t.Run you will have clearer test output on failures as it will print the name of the case 
+=======
+repeated += character is equivalent to repeated = repeated + character. This means each time the loop runs, the character string is appended to the end of the repeated string.
+>>>>>>> 5809362c59db6b29db1ea5623135729b26b39bc2

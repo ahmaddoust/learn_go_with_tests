@@ -1,3 +1,5 @@
+//some practice examples and mix up of tests 
+
 package main
 
 import (
